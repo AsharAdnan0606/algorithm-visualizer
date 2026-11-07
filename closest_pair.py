@@ -25,7 +25,9 @@ def _closest_pair_rec(pts, x_idx, y_idx, steps=None, depth=0):
     n = len(x_idx)
 
     if n <= 3:
-        return _brute_force(pts, x_idx)
+        result = _brute_force(pts, x_idx)
+        _log(steps, type="base", depth=depth, points=list(x_idx), best=result)
+        return result
 
     mid = n // 2
     left_x = x_idx[:mid]
@@ -54,7 +56,8 @@ def _closest_pair_rec(pts, x_idx, y_idx, steps=None, depth=0):
 
     mid_x = pts[x_idx[mid]][0]
     strip = [idx for idx in y_idx if abs(pts[idx][0] - mid_x) < delta]
-
+    _log(steps, type="strip", depth=depth, mid_x=mid_x, delta=delta, strip=strip)
+    
     strip_len = len(strip)
     for i in range(strip_len):
         p = pts[strip[i]]
