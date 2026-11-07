@@ -36,6 +36,51 @@ function drawPoints() {
   }
 }
 
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const stepInfo = document.getElementById("stepInfo");
+
+let stepIndex = -1;
+
+function dot(i, color, r = 4) {
+  const [x, y] = toCanvas(data.points[i]);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawSplit(s) {
+  for (const i of s.left) dot(i, "#2a7de1");
+  for (const i of s.right) dot(i, "#e8832a");
+  const x = toCanvas([s.mid_x, scale.minY])[0];
+  ctx.strokeStyle = "#000";
+  ctx.beginPath();
+  ctx.moveTo(x, 0);
+  ctx.lineTo(x, canvas.height);
+  ctx.stroke();
+}
+
+function showStep() {
+  drawPoints();
+  if (stepIndex >= 0) {
+    const s = data.steps[stepIndex];
+    if (s.type === "split") drawSplit(s);
+  }
+  stepInfo.textContent = `Step ${stepIndex + 1} / ${data.steps.length}`;
+}
+
+nextBtn.addEventListener("click", () => {
+  if (!data || stepIndex >= data.steps.length - 1) return;
+  stepIndex++;
+  showStep();
+});
+
+prevBtn.addEventListener("click", () => {
+  if (!data || stepIndex < 0) return;
+  stepIndex--;
+  showStep();
+});
 
 fileInput.addEventListener("change", async () => {
   const file = fileInput.files[0];
@@ -53,5 +98,6 @@ fileInput.addEventListener("change", async () => {
 
   status.textContent = `${data.points.length} points, ${data.steps.length} steps`;
   setupScale(data.points);
-  drawPoints();
+  stepIndex = -1;
+  showStep();
 });
