@@ -57,14 +57,17 @@ def _closest_pair_rec(pts, x_idx, y_idx, steps=None, depth=0):
     mid_x = pts[x_idx[mid]][0]
     strip = [idx for idx in y_idx if abs(pts[idx][0] - mid_x) < delta]
     _log(steps, type="strip", depth=depth, mid_x=mid_x, delta=delta, strip=strip)
-    
+
     strip_len = len(strip)
     for i in range(strip_len):
         p = pts[strip[i]]
         for j in range(i + 1, min(i + 8, strip_len)):
             q = pts[strip[j]]
             d = _dist(p, q)
-            if d < best[2]:
+            improved = d < best[2]
+            _log(steps, type="compare", depth=depth,
+                 a=strip[i], b=strip[j], dist=d, improved=improved)
+            if improved:
                 best = (p, q, d)
     return best
 
