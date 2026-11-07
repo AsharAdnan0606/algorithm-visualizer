@@ -50,6 +50,38 @@ function dot(i, color, r = 4) {
   ctx.fill();
 }
 
+function line(p, q, color, width = 2) {
+  const [x1, y1] = toCanvas(p);
+  const [x2, y2] = toCanvas(q);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.lineWidth = 1;
+}
+
+function drawBase(s) {
+  for (const i of s.points) dot(i, "#2a9d4a", 5);
+  if (s.best) line(s.best[0], s.best[1], "#2a9d4a");
+}
+
+function drawStrip(s) {
+  const x1 = toCanvas([s.mid_x - s.delta, 0])[0];
+  const x2 = toCanvas([s.mid_x + s.delta, 0])[0];
+  ctx.fillStyle = "rgba(150, 80, 200, 0.15)";
+  ctx.fillRect(x1, 0, x2 - x1, canvas.height);
+  for (const i of s.strip) dot(i, "#9650c8");
+}
+
+function drawCompare(s) {
+  const color = s.improved ? "#d62828" : "#888";
+  line(data.points[s.a], data.points[s.b], color);
+  dot(s.a, color, 5);
+  dot(s.b, color, 5);
+}
+
 function drawSplit(s) {
   for (const i of s.left) dot(i, "#2a7de1");
   for (const i of s.right) dot(i, "#e8832a");
@@ -66,6 +98,9 @@ function showStep() {
   if (stepIndex >= 0) {
     const s = data.steps[stepIndex];
     if (s.type === "split") drawSplit(s);
+    else if (s.type === "base") drawBase(s);
+    else if (s.type === "strip") drawStrip(s);
+    else if (s.type === "compare") drawCompare(s);
   }
   stepInfo.textContent = `Step ${stepIndex + 1} / ${data.steps.length}`;
 }
