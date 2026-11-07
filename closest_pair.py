@@ -1,5 +1,8 @@
 import math
 
+def _log(steps, **event):
+    if steps is not None:
+        steps.append(event)
 
 def _dist(p1, p2):
     return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
@@ -18,7 +21,7 @@ def _brute_force(pts, indices):
     return best
 
 
-def _closest_pair_rec(pts, x_idx, y_idx):
+def _closest_pair_rec(pts, x_idx, y_idx, steps=None, depth=0):
     n = len(x_idx)
 
     if n <= 3:
@@ -27,6 +30,9 @@ def _closest_pair_rec(pts, x_idx, y_idx):
     mid = n // 2
     left_x = x_idx[:mid]
     right_x = x_idx[mid:]
+
+    _log(steps, type="split", depth=depth,
+        mid_x=pts[x_idx[mid]][0], left=left_x, right=right_x)
 
     left_set = set(left_x)
     left_y = []
@@ -37,8 +43,8 @@ def _closest_pair_rec(pts, x_idx, y_idx):
         else:
             right_y.append(idx)
 
-    d_left = _closest_pair_rec(pts, left_x, left_y)
-    d_right = _closest_pair_rec(pts, right_x, right_y)
+    d_left = _closest_pair_rec(pts, left_x, left_y, steps, depth + 1)
+    d_right = _closest_pair_rec(pts, right_x, right_y, steps, depth + 1)
 
     if d_left[2] <= d_right[2]:
         best = d_left
@@ -60,11 +66,11 @@ def _closest_pair_rec(pts, x_idx, y_idx):
     return best
 
 
-def closest_pair(points):
+def closest_pair(points, steps=None):
     pts = list(points)
     if len(pts) < 2:
         raise ValueError("At least 2 points are required")
 
     x_idx = sorted(range(len(pts)), key=lambda i: pts[i][0])
     y_idx = sorted(range(len(pts)), key=lambda i: pts[i][1])
-    return _closest_pair_rec(pts, x_idx, y_idx)
+    return _closest_pair_rec(pts, x_idx, y_idx, steps)
