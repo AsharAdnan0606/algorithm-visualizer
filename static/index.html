@@ -1,17 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Divide & Conquer Visualizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Divide &amp; Conquer Visualizer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Closest Pair Visualizer</h1>
-  <input type="file" id="fileInput" accept=".txt">
-  <p id="status"></p>
-  <button id="prevBtn">Prev</button>
-  <button id="nextBtn">Next</button>
-  <span id="stepInfo"></span>
-  <canvas id="canvas" width="800" height="600" style="border:1px solid #888"></canvas>
+  <header>
+    <div class="brand"><span class="logo">◈</span>
+      <div><h1>Divide &amp; Conquer Visualizer</h1><p>CS302 · Closest Pair &amp; Karatsuba</p></div>
+    </div>
+    <nav>
+      <button class="tab active" data-mode="cp">Closest Pair</button>
+      <button class="tab" data-mode="ka">Karatsuba</button>
+    </nav>
+  </header>
+  <main>
+    <label id="drop" class="card drop">
+      <input type="file" id="file" accept=".txt" hidden>
+      <b>Drop an input file here</b><span>or click to browse (.txt)</span>
+      <em id="fname"></em>
+    </label>
+    <section class="card controls">
+      <button id="reset" title="Restart">⏮</button>
+      <button id="prev" title="Previous step">◀</button>
+      <button id="play" class="primary">▶ Play</button>
+      <button id="next" title="Next step">▶</button>
+      <button id="skip" title="Jump to result">⏭</button>
+      <input type="range" id="scrub" min="0" max="0" value="0">
+      <span id="stepInfo">Step 0 / 0</span>
+      <label class="spd">Speed <input type="range" id="speed" min="1" max="100" value="30"></label>
+    </section>
+    <section class="stage">
+      <div class="card view">
+        <canvas id="canvas" width="900" height="560"></canvas>
+        <div id="tree" hidden></div>
+      </div>
+      <aside>
+        <div class="card"><h3>What’s happening</h3><p id="log">Load a dataset to begin.</p></div>
+        <div class="card"><h3>Stats</h3><div id="stats" class="stats"></div></div>
+        <div class="card"><h3>Legend</h3><div id="legend"></div></div>
+      </aside>
+    </section>
+  </main>
   <script src="app.js"></script>
 </body>
 </html>
